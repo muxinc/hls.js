@@ -276,6 +276,56 @@ const multiConfig = [
     ],
     devtool: 'source-map',
   },
+  // Silliness to get this working with Vercel more easily
+  {
+    name: 'debug',
+    mode: 'development',
+    output: {
+      filename: 'hls.js',
+      chunkFilename: '[name].js',
+      sourceMapFilename: 'hls.js.map',
+      path: path.resolve(__dirname, 'demo'),
+      publicPath: '/demo/',
+      library: 'Hls',
+      libraryTarget: 'umd',
+      libraryExport: 'default',
+      globalObject: 'this', // https://github.com/webpack/webpack/issues/6642#issuecomment-370222543
+    },
+    plugins: mainPlugins,
+    devtool: 'source-map',
+  },
+  {
+    name: 'demo',
+    entry: './demo/main',
+    mode: 'development',
+    output: {
+      filename: 'hls-demo.js',
+      chunkFilename: '[name].js',
+      sourceMapFilename: 'hls-demo.js.map',
+      path: path.resolve(__dirname, 'demo'),
+      publicPath: '/demo/',
+      library: 'HlsDemo',
+      libraryTarget: 'umd',
+      libraryExport: 'default',
+      globalObject: 'this', // https://github.com/webpack/webpack/issues/6642#issuecomment-370222543
+    },
+    plugins: [
+      ...mainPlugins,
+      new webpack.DefinePlugin({
+        __NETLIFY__: JSON.stringify(
+          env.NETLIFY === 'true'
+            ? {
+                branch: env.BRANCH,
+                commitRef: env.COMMIT_REF,
+                reviewID:
+                  env.PULL_REQUEST === 'true' ? parseInt(env.REVIEW_ID) : null,
+              }
+            : {}
+        ),
+      }),
+    ],
+    devtool: 'source-map',
+  },
 ].map((config) => {
   const baseClone = merge({}, baseConfig);
   // Strip console.assert statements from build targets

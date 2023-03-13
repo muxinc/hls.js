@@ -42,3 +42,9 @@ _ReSharper*/
 
 # VSCode custom workspace settings
 .vscode/settings.json
+
+# Silly demo stuff for vercel
+/demo/hls.js
+/demo/hls.js.map
+/demo/hls-demo.js
+/demo/hls-demo.js.map
